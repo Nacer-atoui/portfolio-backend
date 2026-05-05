@@ -4,6 +4,7 @@ import cors from 'cors';
 // TODO : importer vos routes au fur et à mesure
 
 import errorHandler from './middlewares/errorHandler.js';
+import authRoutes from "./routes/auth.routes.js";
 
 const app = express();
 const PORT = process.env.PORT || 3001;

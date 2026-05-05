@@ -1,6 +1,8 @@
-export function findByEmail(email) {
-    const [rows] = db.query(
-        "SELECT * FROM users WHERE email = ?" , [email]
+import db from "../config/db.js";
+
+export const findByEmail = async (email) => {
+    const [rows] = await db.query(
+        "SELECT * FROM users WHERE email = ?", [email]
     );
     return rows[0] || null;
 }
