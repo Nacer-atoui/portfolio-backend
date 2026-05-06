@@ -16,3 +16,8 @@ export const newProject = async (req, res) => {
     const project = await ProjectService.createProject(req.body)
     return res.status(201).json(project)
 }
+
+export const projectUpdate = async (req, res) => {
+    const project = await ProjectService.updateProject(req.params.id, req.body)
+    return res.status(201).json(project)
+}
