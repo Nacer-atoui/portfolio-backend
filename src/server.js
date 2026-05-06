@@ -5,6 +5,7 @@ import cors from 'cors';
 
 import errorHandler from './middlewares/errorHandler.js';
 import authRoutes from "./routes/auth.routes.js";
+import projectRoutes from "./routes/project.routes.js";
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -16,6 +17,7 @@ app.use(express.json());
 // Exemple avec une route — à dupliquer pour chaque groupe de routes
 app.use('/api/auth', authRoutes);
 // TODO : brancher les autres routes ici
+app.use("/api/projects", projectRoutes);
 
 // Gestionnaire d'erreurs — toujours EN DERNIER
 app.use(errorHandler);

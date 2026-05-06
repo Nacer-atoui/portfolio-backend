@@ -7,6 +7,6 @@ import { login } from "../controllers/auth.controller.js";
 
 const router = Router();
 
-router.post("/login",login, validateAuth, validate, authenticate, authorize('admin'));
+router.post("/login", validateAuth, validate, login);
 
 export default router;
