@@ -36,5 +36,12 @@ export const updateProject = async (id, data) => {
     const project = await ProjectModel.findById(id);
 
     return project;
-
 }
+
+export const deleteProject = async (id) => {
+  const affected = await ProjectModel.remove(id);
+
+  if (!affected) {
+    throw new AppError('Projet introuvable ou déjà supprimé', 404);
+  }
+};

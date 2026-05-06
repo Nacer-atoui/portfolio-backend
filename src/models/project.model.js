@@ -29,3 +29,11 @@ export const update = async (id, { title, description, tech_stack, github_url, d
     );
     return findById(id);
 }
+
+export const remove = async (id) => {
+  const [result] = await db.query(
+    "DELETE FROM projects WHERE id = ?",
+    [id]
+  );
+  return result.affectedRows > 0;
+};
