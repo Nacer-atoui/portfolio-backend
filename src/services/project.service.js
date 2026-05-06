@@ -1,3 +1,4 @@
+import { application } from 'express';
 import AppError from '../errors/AppError.js';
 import * as ProjectModel from '../models/project.model.js';
  
@@ -22,3 +23,25 @@ export const createProject = async (data) => {
 
     return result;
 }
+
+export const updateProject = async (id, data) => {
+    const result = await ProjectModel.findById(id)
+
+    if (result.length === 0) {
+        throw new AppError('Projet introuvable', 404);
+    }
+
+    const updated = await ProjectModel.update(id, data);
+
+    const project = await ProjectModel.findById(id);
+
+    return project;
+}
+
+export const deleteProject = async (id) => {
+  const affected = await ProjectModel.remove(id);
+
+  if (!affected) {
+    throw new AppError('Projet introuvable ou déjà supprimé', 404);
+  }
+};
