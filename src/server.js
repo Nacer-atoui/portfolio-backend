@@ -6,6 +6,7 @@ import cors from 'cors';
 import errorHandler from './middlewares/errorHandler.js';
 import authRoutes from "./routes/auth.routes.js";
 import projectRoutes from "./routes/project.routes.js";
+import contactRoutes from "./routes/contact.routes.js";
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -18,6 +19,7 @@ app.use(express.json());
 app.use('/api/auth', authRoutes);
 // TODO : brancher les autres routes ici
 app.use("/api/projects", projectRoutes);
+app.use("/api/contact", contactRoutes);
 
 // Gestionnaire d'erreurs — toujours EN DERNIER
 app.use(errorHandler);
