@@ -24,6 +24,4 @@ app.use("/api/contact", contactRoutes);
 // Gestionnaire d'erreurs — toujours EN DERNIER
 app.use(errorHandler);
 
-app.listen(PORT, () => {
-  console.log(`Serveur démarré sur http://localhost:${PORT}`);
-});
+export default app;
