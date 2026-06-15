@@ -13,8 +13,8 @@ services:
       DB_NAME: ${DB_NAME}
     depends_on:
       - db
-    evelop:
-    watch:
+    develop:
+      watch:
       - action: sync+restart
         path: .
         target: /app
