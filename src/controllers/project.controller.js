@@ -14,16 +14,21 @@ export const getById = async (req, res) => {
 
 
 export const newProject = async (req, res) => {
-    const data = req.body;
-    const idUtilisateur = req.user.id; 
-    const projectData = {
-        ...data,
-        users_id: idUtilisateur 
-    };
+    try {
+        const data = req.body;
+        const idUtilisateur = req.user.id; 
+        const projectData = {
+            ...data,
+            users_id: idUtilisateur 
+        };
 
-    const project = await ProjectService.createProject(projectData);
-    
-    return res.status(201).json(project);
+        const project = await ProjectService.createProject(projectData);
+        
+        return res.status(201).json(project);
+    } catch (error) {
+        console.error("Erreur lors de la création :", error);
+        return res.status(500).json({ message: "Erreur serveur lors de la création du projet." });
+    }
 }
 
 export const projectUpdate = async (req, res) => {

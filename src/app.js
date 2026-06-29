@@ -12,7 +12,11 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 
 // Middlewares globaux
-app.use(cors({ origin: 'http://localhost:5173' }));
+app.use(  cors({
+    origin: process.env.CORS_ORIGIN,
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  }));
 app.use(express.json());
 
 // Exemple avec une route — à dupliquer pour chaque groupe de routes
@@ -24,4 +28,3 @@ app.use("/api/contact", contactRoutes);
 // Gestionnaire d'erreurs — toujours EN DERNIER
 app.use(errorHandler);
 
-export default app;
