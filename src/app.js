@@ -28,3 +28,4 @@ app.use("/api/contact", contactRoutes);
 // Gestionnaire d'erreurs — toujours EN DERNIER
 app.use(errorHandler);
 
+export default app;
