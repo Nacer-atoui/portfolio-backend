@@ -12,19 +12,25 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 
 // Middlewares globaux
-const allowedOrigins = process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',') : [];
+const corsOptions = {
+  // Cette fonction permet de voir EXACTEMENT ce que le navigateur envoie
+  origin: function (origin, callback) {
+    console.log("=== DEBUG CORS - ORIGINE ENTRANTE ===");
+    console.log("Origine :", origin);
+    
+    // On autorise temporairement TOUTES les requêtes pour débloquer le frontend
+    callback(null, true);
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Accept']
+};
 
-console.log("=== DEBUG CORS ===");
-console.log("Valeur brute process.env.CORS_ORIGIN :", process.env.CORS_ORIGIN);
-console.log("Tableau allowedOrigins :", allowedOrigins);
-console.log("==================");
+// 1. Appliquer les options
+app.use(cors(corsOptions));
 
-app.use(cors({
-  origin: allowedOrigins,
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-}));
-app.use(express.json());
+// 2. FORCER la réponse HTTP 200 pour toutes les requêtes OPTIONS (Preflight)
+app.options('*', cors(corsOptions));
 
 // Exemple avec une route — à dupliquer pour chaque groupe de routes
 app.use('/api/auth', authRoutes);
