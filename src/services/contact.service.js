@@ -1,23 +1,38 @@
-import nodemailer from "nodemailer";
+import Mailjet from 'node-mailjet';
 
-export const sendContactEmail = async (name, email, message) => {
-    console.log(email)
-  const transport = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 587,
-    auth: {
-      user: process.env.MAIL_USER,
-      pass: process.env.MAIL_PASS, // mot de passe d'application Google
-    },
+// Initialisation (en dehors de la fonction pour ne pas la refaire à chaque appel)
+const mailjet = Mailjet.apiConnect(
+  process.env.MAILJET_API_KEY,
+  process.env.MAILJET_SECRET_KEY
+);
+
+export const sendContactEmail = async (nom, email, message) => {
+  const request = await mailjet.post('send', { version: 'v3.1' }).request({
+    Messages: [
+      {
+        From: {
+          Email: process.env.MAILJET_SENDER_EMAIL, // Ton mail validé
+          Name: "Portfolio Contact",
+        },
+        To: [
+          {
+            Email: "nacerpro69@gmail.com", 
+            Name: "Nacer",
+          },
+        ],
+        ReplyTo: {
+          Email: email, // L'email du visiteur
+          Name: nom
+        },
+        Subject: `Nouveau message de ${nom} sur ton portfolio !`,
+        TextPart: `Message de: ${nom} (${email})\n\n${message}`,
+        HTMLPart: `<h3>Nouveau contact depuis le portfolio</h3>
+                   <p><strong>Nom :</strong> ${nom}</p>
+                   <p><strong>Email :</strong> ${email}</p>
+                   <p><strong>Message :</strong><br />${message}</p>`,
+      },
+    ],
   });
-
-  await transport.sendMail({
-    from: `"${name} (${email})" <${process.env.MAIL_USER}>`, 
   
-  to: process.env.MAIL_TO,
-  replyTo: email,
-  subject: `Nouveau message de : ${name}`,
-  text: message,
-  });
+  return request;
 };
-
