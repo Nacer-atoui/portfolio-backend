@@ -1,0 +1,9 @@
+name = "portfolio-backend"
+main = "src/app.js" # À MODIFIER : mets le chemin exact vers ton fichier principal
+compatibility_date = "2026-07-07" # Fixe la version de l'environnement Cloudflare
+compatibility_flags = [ "nodejs_compat" ]
+
+# C'est ici que tu ajouteras la configuration Hyperdrive plus tard
+# [[hyperdrive]]
+# binding = "DB"
+# id = "677948e17fcb44bd9db0e5cd94ad7acd"

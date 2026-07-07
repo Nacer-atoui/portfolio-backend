@@ -4,14 +4,12 @@ import { newProject, getAll, getById, projectUpdate, projectDelete } from "../co
 import { authenticate } from "../middlewares/auth.middleware.js";
 import { authorize } from "../middlewares/authorize.middleware.js";
 import { validateProject } from "../validators/project.validator.js";
-import multer from 'multer';
 
-const upload = multer({ storage: multer.memoryStorage() });
 const router = Router();
 
 router.get("/", getAll);
 router.get("/:id", getById);
-router.post("/", authenticate, authorize('admin'), upload.single('image'), validateProject, validate, newProject);
+router.post("/", authenticate, authorize('admin'), validateProject, validate, newProject);
 router.put("/:id", authenticate, authorize('admin'), validateProject, validate, projectUpdate)
 router.delete("/:id", authenticate, authorize('admin'), projectDelete)
 

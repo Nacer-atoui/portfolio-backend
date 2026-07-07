@@ -1,6 +1,6 @@
 import AppError from "../errors/AppError.js";
 import * as userModel from "../models/user.model.js";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
 export const loginUser = async ({ email, password }) => {
