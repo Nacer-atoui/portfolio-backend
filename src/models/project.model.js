@@ -49,11 +49,11 @@ export const findById = async (id) => {
 // --- CREATION ---
 
 export const create = async ({
-  title,
-  description,
-  github_url,
-  demo_url,
-  users_id,
+  title = null,
+  description = null,
+  github_url = null,
+  demo_url = null,      // <-- Si absent, il devient sagement null !
+  users_id = null,
   images = [],
   stacks = []
 }) => {
