@@ -10,6 +10,7 @@ import {
 import { authenticate } from "../middlewares/auth.middleware.js";
 import { authorize } from "../middlewares/authorize.middleware.js";
 import { validateProject } from "../validators/project.validator.js";
+import upload from "../middlewares/upload.js";
 
 const router = Router();
 
