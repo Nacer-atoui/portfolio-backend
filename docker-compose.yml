@@ -6,7 +6,9 @@ services:
     ports:
       - "3001:3001"
     env_file:
-      - .env
+      - .env # N'oublie pas de pointer vers ton .env de dev
+    depends_on:
+      - db # On dit à l'app d'attendre que la base soit là
     develop:
       watch:
         - action: sync+restart
@@ -16,3 +18,17 @@ services:
             - node_modules/
         - action: rebuild
           path: package.json
+
+  db:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: portfolio_dev
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+
+volumes:
+  db_data:
