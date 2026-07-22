@@ -9,5 +9,5 @@ export const validateContact = [
         .isEmail(),
     body("message")
         .notEmpty()
-        .isLength({ min: 10, max: 2000})
+        .isLength({ max: 2000})
 ]

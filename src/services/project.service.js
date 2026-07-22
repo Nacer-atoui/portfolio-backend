@@ -1,15 +1,15 @@
-import { application } from 'express';
+
 import AppError from '../errors/AppError.js';
 import * as ProjectModel from '../models/project.model.js';
 
 export const getAllProject = async () => {
-    // ✅ On stocke la requête et on la retourne directement
+    // On stocke la requête et on la retourne directement
     const rows = await ProjectModel.findAll();
     return rows; 
 };
 
 export const getProjectById = async (id) => {
-    // ✅ Le modèle renvoie directement l'objet projet
+    // Le modèle renvoie directement l'objet projet
     const project = await ProjectModel.findById(id);
     
     if (!project) { // Plus besoin de .length
@@ -25,7 +25,7 @@ export const createProject = async (data) => {
 }
 
 export const updateProject = async (id, data) => {
-    // ✅ Même correction ici pour la mise à jour
+    // Même correction ici pour la mise à jour
     const projectExists = await ProjectModel.findById(id);
 
     if (!projectExists) {
