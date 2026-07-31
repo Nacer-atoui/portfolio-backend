@@ -33,7 +33,8 @@ router.put(
   "/:id",
   authenticate,
   authorize("admin"),
-  validateProject, // Si tu modifies aussi les images en PUT, il faudra ajouter Multer ici aussi
+  upload.array("image_url"),
+  validateProject, 
   validate,
   projectUpdate,
 );
