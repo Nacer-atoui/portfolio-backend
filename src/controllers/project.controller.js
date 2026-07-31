@@ -13,34 +13,40 @@ export const getById = async (req, res) => {
 
 export const newProject = async (req, res) => {
   try {
-    // 1. Récupération des données texte (req.body)
-    const { title, description, github_url, demo_url } = req.body;
-    
-    // 2. Les stacks sont en JSON, il faut les parser (car FormData n'envoie que du texte)
-    const stacks = req.body.stacks ? JSON.parse(req.body.stacks) : [];
+    const data = req.body;
+    const idUtilisateur = req.user.id; 
 
-    // 3. Récupération des images uploadées sur Cloudinary
-    // Si tu utilises multer-storage-cloudinary, le lien de l'image est souvent dans req.files[x].path
+    // 1. On parse les stacks car FormData les a envoyés en string JSON
+    let parsedStacks = [];
+    if (data.stacks) {
+      parsedStacks = JSON.parse(data.stacks);
+    }
+
+    // 2. On récupère les images depuis req.files
+    // (Cloudinary via Multer place généralement l'URL générée dans file.path)
     const images = [];
     if (req.files && req.files.length > 0) {
-      req.files.forEach(file => {
-        images.push({ image_url: file.path }); // file.path contient l'URL Cloudinary
+      req.files.forEach((file) => {
+        // file.path contient le lien de ton image sur Cloudinary
+        images.push({ image_url: file.path }); 
       });
     }
 
-    // 4. Appel du service/modèle
-    const newProject = await projectService.create({
-      title,
-      description,
-      github_url,
-      demo_url,
-      stacks,
-      images
-    });
+    // 3. On prépare l'objet complet pour le modèle
+    const projectData = {
+      ...data,
+      stacks: parsedStacks, // On écrase la version texte par la version tableau
+      images: images,       // On ajoute le tableau d'images formaté
+      users_id: idUtilisateur 
+    };
 
-    res.status(201).json(newProject);
+    // 4. On crée le projet
+    const project = await ProjectService.createProject(projectData);
+    res.status(201).json(project);
+    
   } catch (error) {
-    // ...
+    console.error("Erreur lors de la création du projet :", error);
+    res.status(500).json({ message: "Erreur serveur", error: error.message });
   }
 };
 
