@@ -1,20 +1,25 @@
 import multer from 'multer';
-import { v2 as cloudinary } from 'cloudinary';
-import { CloudinaryStorage } from 'multer-storage-cloudinary';
 
-// 1. Configuration du stockage automatique vers Cloudinary
-const storage = new CloudinaryStorage({
-  cloudinary: cloudinary,
-  params: {
-    folder: 'portfolio_projects', // Le dossier dans ton espace Cloudinary
-    allowed_formats: ['jpg', 'png', 'jpeg', 'webp', 'gif'], // N'accepte que les images
-  },
-});
+// 1. On configure le stockage temporaire en mémoire (RAM) 
+const storage = multer.memoryStorage();
 
-// 2. Initialisation de Multer
+// 2. On crée un filtre de sécurité pour n'accepter QUE les images
+const fileFilter = (req, file, cb) => {
+  if (file.mimetype.startsWith('image/')) {
+    cb(null, true); // Accepte le fichier
+  } else {
+    cb(new Error('Le fichier doit être une image !'), false); // Rejette le fichier
+  }
+};
+
+// 3. On initialise Multer avec ces configurations
 const upload = multer({ 
-  storage: storage,
-  limits: { fileSize: 5 * 1024 * 1024 } // 5 Mo maximum
+  storage: storage, 
+  fileFilter: fileFilter,
+  limits: {
+    fileSize: 5 * 1024 * 1024 // Limite optionnelle : 5 Mo maximum par image
+  }
 });
 
+// 4. On exporte le middleware par défaut
 export default upload;

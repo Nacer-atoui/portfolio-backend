@@ -16,27 +16,34 @@ export const newProject = async (req, res) => {
     const data = req.body;
     const idUtilisateur = req.user.id; 
 
-    // On parse les stacks qui arrivent sous forme de texte depuis le FormData
-    let parsedStacks = data.stacks ? JSON.parse(data.stacks) : [];
+    // 1. On parse les stacks car FormData les a envoyés en string JSON
+    let parsedStacks = [];
+    if (data.stacks) {
+      parsedStacks = JSON.parse(data.stacks);
+    }
 
-    // Multer a déjà envoyé l'image sur Cloudinary, on a juste à récupérer l'URL
+    // 2. On récupère les images depuis req.files
+    // (Cloudinary via Multer place généralement l'URL générée dans file.path)
     const images = [];
     if (req.files && req.files.length > 0) {
       req.files.forEach((file) => {
-        images.push({ image_url: file.path }); // file.path contient le lien direct Cloudinary !
+        // file.path contient le lien de ton image sur Cloudinary
+        images.push({ image_url: file.path }); 
       });
     }
 
+    // 3. On prépare l'objet complet pour le modèle
     const projectData = {
       ...data,
-      stacks: parsedStacks,
-      images: images,
+      stacks: parsedStacks, // On écrase la version texte par la version tableau
+      images: images,       // On ajoute le tableau d'images formaté
       users_id: idUtilisateur 
     };
 
+    // 4. On crée le projet
     const project = await ProjectService.createProject(projectData);
     res.status(201).json(project);
-
+    
   } catch (error) {
     console.error("Erreur lors de la création du projet :", error);
     res.status(500).json({ message: "Erreur serveur", error: error.message });
