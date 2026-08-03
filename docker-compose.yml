@@ -7,6 +7,9 @@ services:
       - "3001:3001"
     env_file:
       - .env # N'oublie pas de pointer vers ton .env de dev
+    volumes:
+      - ./:/app
+      - /app/node_modules
     depends_on:
       - db # On dit à l'app d'attendre que la base soit là
     develop:
