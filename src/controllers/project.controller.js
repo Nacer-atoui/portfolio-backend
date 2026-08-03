@@ -1,4 +1,5 @@
 import * as ProjectService from '../services/project.service.js';
+import { v2 as cloudinary } from 'cloudinary';
 
 export const getAll = async (req, res) => {
   const project = await ProjectService.getAllProject();
@@ -10,42 +11,60 @@ export const getById = async (req, res) => {
   res.json(project);
 };
 
-
 export const newProject = async (req, res) => {
   try {
+    
     const data = req.body;
-    const idUtilisateur = req.user.id; 
+    const idUtilisateur = req.user?.id || null; 
 
-    // 1. On parse les stacks car FormData les a envoyés en string JSON
+    // 1. Parsing des stacks
     let parsedStacks = [];
     if (data.stacks) {
-      parsedStacks = JSON.parse(data.stacks);
+      parsedStacks = typeof data.stacks === 'string' ? JSON.parse(data.stacks) : data.stacks;
     }
 
-    // 2. On récupère les images depuis req.files
-    // (Cloudinary via Multer place généralement l'URL générée dans file.path)
-    const images = [];
+    // 2. RÉCUPÉRATION DES FICHIERS (Blindé pour upload.single OU upload.array)
+    let filesToProcess = [];
     if (req.files && req.files.length > 0) {
-      req.files.forEach((file) => {
-        // file.path contient le lien de ton image sur Cloudinary
-        images.push({ image_url: file.path }); 
-      });
+      filesToProcess = req.files; // Cas upload.array()
+    } else if (req.file) {
+      filesToProcess = [req.file]; // Cas upload.single()
     }
 
-    // 3. On prépare l'objet complet pour le modèle
+    // 3. UPLOAD SUR CLOUDINARY (La méthode DataURI qui marche !)
+    const imagesArray = [];
+    for (const file of filesToProcess) {
+      console.log(`⏳ Envoi de ${file.originalname} vers Cloudinary...`);
+      
+      const b64 = Buffer.from(file.buffer).toString("base64");
+      const dataURI = "data:" + file.mimetype + ";base64," + b64;
+      
+      const result = await cloudinary.uploader.upload(dataURI, {
+        folder: 'portfolio_projects',
+      });
+      
+      imagesArray.push({ image_url: result.secure_url });
+    }
+
+    // 4. PRÉPARATION SÉCURISÉE DES DONNÉES (Évite les undefined pour MySQL)
     const projectData = {
-      ...data,
-      stacks: parsedStacks, // On écrase la version texte par la version tableau
-      images: images,       // On ajoute le tableau d'images formaté
-      users_id: idUtilisateur 
+      title: data.title || null,
+      description: data.description || null,
+      github_url: data.github_url || null,
+      demo_url: data.demo_url || null,
+      users_id: idUtilisateur,
+      images: imagesArray,      // <-- Transmis au modèle sous forme [{ image_url: '...' }]
+      stacks: parsedStacks
     };
 
-    // 4. On crée le projet
+
     const project = await ProjectService.createProject(projectData);
-    res.status(201).json(project);
     
+    res.status(201).json(project);
+
   } catch (error) {
-    console.error("Erreur lors de la création du projet :", error);
+    console.error("❌ ERREUR CRITIQUE DANS LE CONTRÔLEUR :");
+    console.error(error);
     res.status(500).json({ message: "Erreur serveur", error: error.message });
   }
 };

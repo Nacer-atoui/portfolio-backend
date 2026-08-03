@@ -17,7 +17,6 @@ const router = Router();
 router.get("/", getAll);
 router.get("/:id", getById);
 
-
 // On utilise upload.array('image_url') juste avant les validateurs
 router.post(
   "/",
@@ -34,7 +33,7 @@ router.put(
   authenticate,
   authorize("admin"),
   upload.array("image_url"),
-  validateProject, 
+  validateProject, // Si tu modifies aussi les images en PUT, il faudra ajouter Multer ici aussi
   validate,
   projectUpdate,
 );
