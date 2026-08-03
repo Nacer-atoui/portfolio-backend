@@ -125,7 +125,13 @@ export const update = async (
     // 1. Mise à jour des infos de base
     await connection.execute(
       "UPDATE projects SET title=?, description=?, github_url=?, demo_url=? WHERE id=?",
-      [title, description, github_url, demo_url, id]
+      [
+        title ?? null, 
+        description ?? null, 
+        github_url ?? null, 
+        demo_url ?? null, 
+        id
+      ]
     );
 
     // 2. Mise à jour des images : on supprime tout et on recrée

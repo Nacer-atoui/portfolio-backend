@@ -11,6 +11,7 @@ export const getById = async (req, res) => {
   res.json(project);
 };
 
+
 export const newProject = async (req, res) => {
   try {
     console.log("=== 1. NOUVELLE REQUÊTE REÇUE ===");
