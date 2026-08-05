@@ -1,5 +1,5 @@
 import * as ProjectService from '../services/project.service.js';
-import { v2 as cloudinary } from 'cloudinary';
+import cloudinary from '../config/cloudinary.js';
 
 // --- FONCTION UTILITAIRE : TRAITEMENT & UPLOAD CLOUDINARY ---
 const processImageUploads = async (req) => {
