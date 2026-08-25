@@ -67,3 +67,11 @@ jobs:
           PORT: 3000
           JWT_SECRET: test_secret_key
           CORS_ORIGIN: http://localhost:5173
+  deploy:
+    name: Deploy
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: 🚀 Déclencher le déploiement sur Render
+        run: curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK }}        
