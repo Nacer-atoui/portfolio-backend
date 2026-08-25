@@ -17,7 +17,6 @@ const router = Router();
 router.get("/", getAll);
 router.get("/:id", getById);
 
-
 // On utilise upload.array('image_url') juste avant les validateurs
 router.post(
   "/",
