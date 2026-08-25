@@ -1,0 +1,57 @@
+name: CI/CD Backend
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+      - feat/*
+  pull_request:
+    branches:
+      - main
+      - dev
+
+jobs:
+  test:
+    name: Build and test
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: portfolio_test
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    steps:
+      - name: 📥 Checkout du code
+        uses: actions/checkout@v4
+
+      - name: ⚙️ Installer Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: 📦 Installer les dépendances
+        run: npm install
+
+      - name: 🗄️ Initialiser le schéma de test
+        run: mysql -h 127.0.0.1 -u root -proot blog_test < db/init.sql
+
+      - name: 🧪 Lancer les tests
+        run: npm test
+        env:
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_NAME: blog_test
+          DB_USER: root
+          DB_PASSWORD: root
+          PORT: 3000
+          JWT_SECRET: test_secret_key
+          CORS_ORIGIN: http://localhost:5173
