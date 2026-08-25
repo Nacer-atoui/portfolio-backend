@@ -21,6 +21,18 @@ jobs:
         env:
           MYSQL_ROOT_PASSWORD: root
           MYSQL_DATABASE: portfolio_test
+          JWT_SECRET=un_secret_tres_long_et_aleatoire_a_remplacer
+          MAILJET_API_KEY=aaaaaaaaaaaaaaaaaaaaa
+          MAILJET_SECRET_KEY=aaaaaaaaaaaaaaaaaaaaaaaa
+          MAILJET_SENDER_EMAIL=n@n.fr
+          MAIL_USER=n@n.fr
+          MAIL_PASS=aaaaaaaaaaaaaaa
+          MAIL_TO=n@n.fr
+          CLOUDINARY_URL=cloudinary://288475237564248:P-CXSEFJ2ftlauqkiA0Fx4JFZSc@kddk
+          CLOUDINARY_CLOUD_NAME=dilqub3
+          CLOUDINARY_API_KEY=eaaaaaaaaaaaa
+          CLOUDINARY_API_SECRET=P-aaaaaaaaa
+          CORS_ORIGIN=aaaaaaaaaaaaa        
         ports:
           - 3306:3306
         options: >-
@@ -36,7 +48,7 @@ jobs:
       - name: ⚙️ Installer Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 24
+          node-version: 20
 
       - name: 📦 Installer les dépendances
         run: npm install
